@@ -1,5 +1,4 @@
-import "../../App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+
 // import Authenticate from '../../features/searchapi/Authentication';
 import {
   Col,
