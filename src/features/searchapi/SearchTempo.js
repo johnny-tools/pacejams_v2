@@ -10,15 +10,19 @@ import {
   Input,
   Container,
 } from "reactstrap";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { all } from "axios";
 
 const CLIENT_ID = "cc9134429c674743814f08bcbf5173ad";
 const CLIENT_SECRET = "3b572c5185da443583ca0e22dbcb8740";
 
 const SearchTempo = () => {
   const [accessToken, setAccessToken] = useState("");
-  const [playlistURLs, setplaylistURLs] = useState("");
-  // const [trackIDs, setTrackIDs] = useState([]);
+  const [playlistTracks, setPlaylistTracks] = useState([]);
+  const [allTrackInfo, setAllTrackInfo] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [trackName, setTrackName] = useState([]);
+
 
   useEffect(() => {
     // API Access Token
@@ -40,10 +44,9 @@ const SearchTempo = () => {
   }, []);
 
   // Search
-  async function search() {
-    console.log("Search for " + searchInput.current);
+  const search = async () => {
+    console.log("Search for " + searchQuery);
 
-    // Get request using search to get the Artist ID
     var searchParameters = {
       method: "GET",
       headers: {
@@ -54,81 +57,90 @@ const SearchTempo = () => {
 
     const trackIDs = await fetch(
       "https://api.spotify.com/v1/search?q=" +
-        searchInput.current +
-        "&type=playlist",
+      encodeURIComponent(searchQuery) +
+        "&type=playlist&market=US",
       searchParameters
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         const playlistURLs = data.playlists.items.map((x) => x.tracks.href);
-        console.log(playlistURLs);
-        const playlistTracks = playlistURLs.map((url) =>
-          fetch(url, searchParameters)
+        // console.log(playlistURLs);
+
+    const allTrackInfoPromises = playlistURLs.map((url) =>
+    fetch(url, searchParameters)
+      .then((response) => response.json())
+      .then((data) => {
+        const tracks = data.items.map((item) => ({
+          id: item.track.id,
+          name: item.track.name,
+          artist: item.track.artists[0].name,
+          album: item.track.album.name,
+          tempo: null,
+          danceability: null,
+          energy: null,
+          valence: null,
+        }));
+        const audioFeaturesPromises = tracks.map((track) =>
+          fetch(
+            `https://api.spotify.com/v1/audio-features/${track.id}`,
+            searchParameters
+          )
             .then((response) => response.json())
             .then((data) => {
-              data.items.map((item) => {
-                const trackInfo = {
-                  name: item.track.name,
-                  id: item.track.id,
-                };
-                console.log(trackInfo);
-                // let allTrackInfo = [];
-                // allTrackInfo = {...allTrackInfo,trackInfo};
-
-                // console.log(allTrackInfo);
-              });
+              track.tempo = data.tempo;
+              track.danceability = data.danceability;
+              track.energy = data.energy;
+              track.valence = data.valence;
             })
         );
+        Promise.all(audioFeaturesPromises).then(() => {
+          setAllTrackInfo((prevTrackInfo) => [...prevTrackInfo, ...tracks]);
+          
+        });
+        // console.log(allTrackInfo);
+
+        // Testing tempo filtering // eventially the hard coded tempos will be replaced with variables.
+        const desiredTempo = allTrackInfo.filter((track) => track.tempo >= 110 && track.tempo <= 115)
+        console.log(desiredTempo);
+      })
+  );
+  
         return;
       });
-  }
-
-  const searchInput = useRef();
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    search();
   };
 
-  return (
-    <Container>
-      <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col md={6}>
-            <FormGroup>
-              <Label for="searchSongs"></Label>
-              <Input
-                type="search"
-                name="searchSongs"
-                id="searchSongs"
-                placeholder='Type "workout" to search top workout playlists'
-                ref={searchInput}
-              />
-            </FormGroup>
-            <Button onClick={search} color="primary">
-              Search
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+  
 
-      {/* <Container>
-            <Row className="mx-2 row row-cols-4">
-            {tracks.map( (track, i)=> {
-              return (
-                <Card>
-                <Card.Img src={track.images[0].url} />
-                <Card.Body>
-                  <Card.Title>{track.name}</Card.Title>
-                </Card.Body>
-              </Card>
-              )
-            })}
-              
-            </Row>
-          </Container> */}
-    </Container>
-  );
+          const handleSubmit = (e) => {
+            e.preventDefault();
+            search();
+          };
+
+          return (
+        <Container fluid className="border">
+              <Form onSubmit={handleSubmit}>
+                <Row className="justify-content-md-center">
+                  <Col md="6">
+                    <FormGroup>
+                      <Label for="searchSongs"></Label>
+                      <Input
+                        type="search"
+                        name="searchSongs"
+                        id="searchSongs"
+                        placeholder='Type "workout" to search top workout playlists'
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </FormGroup>
+                    <Button onClick={search} color="primary">
+                      Search
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            </Container>
+          );
 };
 
 export default SearchTempo;

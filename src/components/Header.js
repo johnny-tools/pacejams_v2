@@ -11,7 +11,7 @@ import {
   
   const Header = () => {
     return (
-      <Navbar dark color="primary" sticky="top" expand="md">
+      <Navbar sticky="top" expand="md">
         <NavbarBrand className="ms-5" href="/">
           {/* <img src={NucampLogo} alt="nucamp logo" className="float-start" /> */}
           <h1 className="mt-1">PaceJams</h1>

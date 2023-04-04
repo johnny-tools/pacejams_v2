@@ -1,42 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Gajraj+One&family=Lobster&family=Pacifico&family=Poppins:wght@700&display=swap');
-/* font-family: 'Audiowide', cursive;
-font-family: 'Gajraj One', cursive;
-font-family: 'Lobster', cursive;
-font-family: 'Pacifico', cursive;
-font-family: 'Poppins', sans-serif; */
+
 
 body {
     font-family: 'Open Sans', sans-serif;
+    background-color: #282A36;
 }
 
 h1 {
     font-family: 'Gajraj One', cursive;
-}
-
-h2,
-h3,
-.card-body > .card-title {
-    font-family: 'Lobster', cursive;
-}
-
-.card-title {
-    font-weight: 500;
-    font-size: 1.25rem;
+    font-size: 5rem;
+    color: white;
 }
 
 h2 {
-    color: #3046c5;
-}
-
-.card-img-overlay .card-title {
+    display: flex;
     color: white;
-    background-color: rgba(0, 0, 0, 0.5);
+    font-family: 'poppins';
+    font-size: 30px;
+    /* text-shadow: 0 0 4px black; */
 }
 
-.row-content {
-    padding: 50px 0;
-    border-bottom: 1px ridge;
-    min-height: 200px;
+.content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    /* z-index: 1; */
+}
+
+
+/* img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+} */
+
+.boxstyle {
+    border-radius: 25px;
+    word-wrap: break-word;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-size: 100% 100%;
+    width: 15rem;
+    height: 15rem;
+    z-index: 2;
 }
 
 .navbar-brand {
@@ -51,58 +64,28 @@ h2 {
     max-width: 4rem;
 }
 
-.navbar-dark {
-    background-color: #901cad;
-    background-image: linear-gradient(to right, #5637dd, #3046c5, #0b010c);
+.navbar {
+    background: rgba(86,86,86,0.3);
     margin-bottom: 2rem;
     min-height: 8rem;
+    backdrop-filter: blur(10px);
 }
 
-.page-enter {
-    opacity: 0;
-    transform: translateX(-100%);
+.card{
+    margin-top: 8rem;
+    padding: 1rem 3rem;
+    background: rgba(86,86,86,0.3);
+    backdrop-filter: blur(5px);
+    border-color: white;
 }
 
-.page-enter-active {
-    opacity: 1;
-    transform: translateX(0%);
-    transition: 300ms ease-out;
+.userInfoForm {
+    padding-bottom: 1rem;
+    line-height: 150%;
 }
 
-.page-exit {
-    opacity: 1;
+.expand {
+    width: 50rem;
 }
 
-.page-exit-active {
-    opacity: 0;
-    transition: 300ms ease-in;
-}
 
-.heart-message {
-    position: relative;
-    width: 8rem;
-    top: -9rem;
-    left: 1.5rem;
-    color: white;
-    color: black;
-    /* color: red; */
-    font-size: 1.5rem;
-    text-align: center;
-  }
-
-  
-.hearts-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
-  .heart {
-    width: 10rem;
-    height: 10rem;
-    margin: 2rem;
-  }
-
-  .bg-primary {
-    background-color: rgb(179, 7, 247)!important;
-}
