@@ -11,14 +11,10 @@ import {
   
   const Header = () => {
     return (
-      <Navbar sticky="top" expand="md">
-        <NavbarBrand className="ms-5" href="/">
-          {/* <img src={NucampLogo} alt="nucamp logo" className="float-start" /> */}
+      <Navbar fixed="top" expand="md">
+        <NavbarBrand href="/">
           <h1 className="mt-1">PaceJams</h1>
         </NavbarBrand>
-        <Nav className="ms-auto" navbar>
-    
-        </Nav>
       </Navbar>
     );
   };

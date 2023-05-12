@@ -1,20 +1,14 @@
-// import './style.scss';
-import SearchTempo from './features/searchapi/SearchTempo';
-import Header from './components/Header';
-import GenreList from './features/display/GenreList';
-import GetStarted from './pages/GetStarted'
-import BackgroundVid from './components/BackgroundVid'
+
+import Home from './screens/home/Home';
+import Header from './components/Header'
 import './App.css';
 
 function App() {
+  
   return (
-    <div className="App">
-      {/* <BackgroundVid /> */}
+    <div>
       <Header />
-      {/* <GetStarted /> */}
-      <SearchTempo />
-      {/* <SearchForm /> */}
-      {/* <GenreList /> */}
+      <Home />
     </div>
   );
 }

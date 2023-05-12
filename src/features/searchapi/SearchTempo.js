@@ -46,7 +46,7 @@ const SearchTempo = () => {
   // Search
   const search = async () => {
     console.log("Search for " + searchQuery);
-
+  
     var searchParameters = {
       method: "GET",
       headers: {
@@ -54,7 +54,7 @@ const SearchTempo = () => {
         Authorization: "Bearer " + accessToken,
       },
     };
-
+  
     const trackIDs = await fetch(
       "https://api.spotify.com/v1/search?q=" +
       encodeURIComponent(searchQuery) +
@@ -63,54 +63,68 @@ const SearchTempo = () => {
     )
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
         const playlistURLs = data.playlists.items.map((x) => x.tracks.href);
-        // console.log(playlistURLs);
-
-    const allTrackInfoPromises = playlistURLs.map((url) =>
-    fetch(url, searchParameters)
-      .then((response) => response.json())
-      .then((data) => {
-        const tracks = data.items.map((item) => ({
-          id: item.track.id,
-          name: item.track.name,
-          artist: item.track.artists[0].name,
-          album: item.track.album.name,
-          tempo: null,
-          danceability: null,
-          energy: null,
-          valence: null,
-        }));
-        const audioFeaturesPromises = tracks.map((track) =>
-          fetch(
-            `https://api.spotify.com/v1/audio-features/${track.id}`,
-            searchParameters
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              track.tempo = data.tempo;
-              track.danceability = data.danceability;
-              track.energy = data.energy;
-              track.valence = data.valence;
-            })
-        );
-        Promise.all(audioFeaturesPromises).then(() => {
-          setAllTrackInfo((prevTrackInfo) => [...prevTrackInfo, ...tracks]);
-          
-        });
-        // console.log(allTrackInfo);
-
-        // Testing tempo filtering // eventially the hard coded tempos will be replaced with variables.
-        const desiredTempo = allTrackInfo.filter((track) => track.tempo >= 110 && track.tempo <= 115)
-        console.log(desiredTempo);
-      })
-  );
   
-        return;
+        const allTrackInfoPromises = playlistURLs.map((url) =>
+          fetch(url, searchParameters)
+          .then((response) => response.json())
+          .then((data) => {
+
+            const tracks = data.items.map((item) => (
+              {
+              id: item.track.id,
+              name: item.track.name,
+              artist: item.track.artists[0].name,
+              album: item.track.album.name,
+              tempo: null,
+              danceability: null,
+              energy: null,
+              valence: null,
+            }));
+            const audioFeaturesPromises = tracks.map((track) =>
+              fetch(
+                `https://api.spotify.com/v1/audio-features/${track.id}`,
+                searchParameters
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  track.tempo = data.tempo;
+                  track.danceability = data.danceability;
+                  track.energy = data.energy;
+                  track.valence = data.valence;
+                })
+            );
+            
+              Promise.all(audioFeaturesPromises).then(() => {
+              setAllTrackInfo((prevTrackInfo) => [...prevTrackInfo, ...tracks]);
+            });
+          })
+        );
+        Promise.all(allTrackInfoPromises).then(() => {
+          // console.log(allTrackInfo);
+        });
       });
   };
-
   
+  useEffect(() => {
+    // console.log("allTrackInfo updated:", allTrackInfo);
+  }, [allTrackInfo]);
+  
+    // console.log(allTrackInfo);
+    let distinctTracks = (allTrackInfo) => {
+      let uniqueIds = allTrackInfo
+      .filter(
+        (value, index, current_value) => current_value.indexOf(value) === index
+      );
+      return uniqueIds
+    }
+
+    // console.log(distinctTracks(allTrackInfo));
+    const desiredTempo = allTrackInfo.filter((item) => 
+        item.tempo >= 110 && item.tempo <= 112
+      )
+
+    console.log("Filtered Tempos:", desiredTempo);
 
           const handleSubmit = (e) => {
             e.preventDefault();
@@ -133,7 +147,7 @@ const SearchTempo = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
                     </FormGroup>
-                    <Button onClick={search} color="primary">
+                    <Button color="primary">
                       Search
                     </Button>
                   </Col>

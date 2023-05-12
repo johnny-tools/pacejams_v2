@@ -1,0 +1,7 @@
+.main-body{
+    /* margin-top: 11vh; */
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(128, 37, 248);
+    display: flex;
+}
