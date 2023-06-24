@@ -17,18 +17,16 @@ import {
 import GenreList from "../../screens/GenreList";
 import GetStarted from "../../screens/GetStarted";
 import PaceCalculator from "../../utils/paceCalculator";
+import Player from "../../screens/player/player";
 
-const SearchTempo = ({ updateDesiredTracks }, props) => {
-  const { userInfo } = GetStarted();
-  // const [calcTempos, setCalcTempos] = useState([calcTempos]);
-    //search function
-    
-  const search = async (genreValue) => {
-    // const {minMaxTempo} = PaceCalculator(userInfo);
-    // console.log(minMaxTempo);
-    // console.log(genreValue);
+const SearchTempo = async ({ updateDesiredTracks, userInfo, calculatedTempos }) => {
+    const { genre } = userInfo;
+    const { minTempo, maxTempo } = calculatedTempos;
+
+    console.log('USERINFO>>>', userInfo);
+
     //Bringing in the playlistUrls from the searchPlaylist function in the spotifyService.js file. Passing in the searchQuery value from the form and sending it to the function parameter.
-    const playlistUrls = await searchPlayList(genreValue);
+    const playlistUrls = await searchPlayList(genre);
 
     //
     const playLists = await Promise.all(
@@ -37,7 +35,7 @@ const SearchTempo = ({ updateDesiredTracks }, props) => {
         return trackResponse;
       })
     );
-    //   console.log(playLists);
+       console.log(playLists);
     const tracks = playLists.flatMap((playlist) => {
        const trackData =  playlist.items
           .filter((item) => item.track !== null && item.track.preview_url !== null)
@@ -57,7 +55,7 @@ const SearchTempo = ({ updateDesiredTracks }, props) => {
           return trackData;
       });
       
-    // console.log(tracks);
+    console.log(tracks);
 
     const tempos = await Promise.all(
       tracks
@@ -65,12 +63,12 @@ const SearchTempo = ({ updateDesiredTracks }, props) => {
         return tracks.indexOf(track) === index;
       })
       .map(async (track) => {
-        const audioFeatures = await getAudioFeatures(track.id);
+        const audioFeatures = await getAudioFeatures(track.id, minTempo, maxTempo);
       
         return audioFeatures;
       })
     );
-      // console.log(tempos);
+      console.log(tempos);
 
       const tracksWithData = tracks.map((track, index) => {
         const { tempo, danceability, energy } = tempos[index];
@@ -82,32 +80,18 @@ const SearchTempo = ({ updateDesiredTracks }, props) => {
               };
       });
       
-      // console.log(tracksWithData);
-      // console.log(calcTempos.minTempo);
+      console.log('tracks with data', tracksWithData);
 
       const filteredTempos = tracksWithData.filter(
-        (track) => track.tempo >= 110 && track.tempo <= 112
+        (track) => track.tempo >= minTempo && track.tempo <= maxTempo
       );
       const desiredTracks = [...new Set(filteredTempos.map(track => track.id))].map(id => {
         return filteredTempos.find(track => track.id === id);
       });
       
     console.log("DSIRED_TEMPS>>>", desiredTracks);
-        updateDesiredTracks(desiredTracks);
-  };
+      updateDesiredTracks(desiredTracks);
 
-  const handleSubmit = (genreValue) => {
-    // console.log(minTempo);
-     search(genreValue);
-  };
-
-  return (
-        <Container fluid  
-        className='screen-container'
-        > 
-            <GenreList handleSubmit={handleSubmit} />
-        </Container>
-  );
 };
 
 export default SearchTempo;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // import { setCurrentUser, selectCurrentUser } from './userSlice';
 import {
@@ -11,27 +11,39 @@ import {
   Input,
   Col,
   Container,
+  Row,
 } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Sidebar from '../components/sidebar/sidebar';
-import {PaceCalculator} from '../utils/paceCalculator';
+import SearchTempo from '../features/searchapi/SearchTempoNew';
+import { PaceCalculator } from '../utils/paceCalculator';
 
-const GetStarted = () => {
+const GetStarted = ({updateDesiredTracks}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [guideText, setguideText] = useState("Let's Get Started");
   const [userInfo, setUserInfo] = useState({});
-  // const [userInfo, setUserInfo] = useState([]);
+  //const [userInfo, setUserInfo] = useState([]);
   // const currentUser = useSelector(selectCurrentUser)
-  const handleSubmit = (values) => {
+
+  // useEffect(() => {
+  //   // Call the SearchTempo function when the userInfo state is updated
+  //   SearchTempo(userInfo);
+  // }, [userInfo]);
+
+  console.log(updateDesiredTracks)
+
+  const handleSubmitForm = (values) => {
+    console.log(values)
     setUserInfo({
       gender: values.gender,
       mpm: values.mpm,
       height: values.height,
+      genre: values.genre,
     });
-    // console.log(userInfo);
+    console.log(userInfo)
     setIsOpen(false);
-    setguideText('Now Pick Your Jams');
-    PaceCalculator(userInfo);
+    setguideText('You Rock!');
+    //PaceCalculator();
   };
 
   const handleFirstClick = () => {
@@ -40,7 +52,7 @@ const GetStarted = () => {
   };
 
   return (
-    <Container className='screen-container'  fluid>
+    <Container className='content' fluid>
       <div className='content'>
         <AnimatePresence>
           <motion.div
@@ -61,19 +73,21 @@ const GetStarted = () => {
                       gender: '',
                       mpm: '',
                       height: '',
+                      genre: '',
                     }}
-                    onSubmit={handleSubmit}
-                    
+                    onSubmit={handleSubmitForm}
                   >
                     <Form>
                       <FormGroup row>
-                        <Label htmlFor='gender'>Gender</Label>
+                        <Label htmlFor='gender' style={{ color: 'white' }}>
+                          Gender
+                        </Label>
                         <Field
                           as='select'
                           name='gender'
                           className='form-control'
                         >
-                          <option selected>Choose one</option>
+                          <option>Choose one</option>
                           <option>Male</option>
                           <option>Female</option>
                         </Field>
@@ -82,9 +96,13 @@ const GetStarted = () => {
                         </ErrorMessage>
                       </FormGroup>
                       <FormGroup row>
-                        <Label htmlFor='mpm'>Minutes / Mile</Label>
+                        <Label htmlFor='mpm' style={{ color: 'white' }}>
+                          Minutes / Mile
+                        </Label>
                         <Field as='select' name='mpm' className='form-control'>
-                          <option selected>How many minutes would you like to run per mile?</option>
+                          <option>
+                            How many minutes would you like to run per mile?
+                          </option>
                           <option>4</option>
                           <option>5</option>
                           <option>6</option>
@@ -103,7 +121,9 @@ const GetStarted = () => {
                         </ErrorMessage>
                       </FormGroup>
                       <FormGroup row>
-                        <Label for='height'>Height</Label>
+                        <Label for='height' style={{ color: 'white' }}>
+                          Height
+                        </Label>
                         <Field
                           type='number'
                           name='height'
@@ -112,6 +132,31 @@ const GetStarted = () => {
                           className='form-control'
                         />
                         <ErrorMessage name='height'>
+                          {(msg) => <p className='text-danger'>{msg}</p>}
+                        </ErrorMessage>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Label htmlFor='genre' style={{ color: 'white' }}>
+                          Genre
+                        </Label>
+                        <Field
+                          as='select'
+                          name='genre'
+                          className='form-control'
+                        >
+                          <option></option>
+                          <option>Pop</option>
+                          <option>Workout</option>
+                          <option>Dance</option>
+                          <option>Hip Hop</option>
+                          <option>Country</option>
+                          <option>EDM</option>
+                          <option>Alternative</option>
+                          <option>Rock</option>
+                          <option>Rap</option>
+                          <option>Party</option>
+                        </Field>
+                        <ErrorMessage name='genre'>
                           {(msg) => <p className='text-danger'>{msg}</p>}
                         </ErrorMessage>
                       </FormGroup>
@@ -126,6 +171,9 @@ const GetStarted = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+      {userInfo.gender && userInfo.mpm && userInfo.height && userInfo.genre && (
+        <PaceCalculator userInfo={userInfo} updateDesiredTracks={updateDesiredTracks}/>
+      )}
     </Container>
   );
 };

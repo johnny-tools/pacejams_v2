@@ -41,13 +41,13 @@ export default function Home() {
       <div className='main-body'>
         <Sidebar />
         <Routes>
-          <Route
-            path='/'
+          {/**<Route
+            path='/searchTempo'
             element={
               <SearchTempoNew updateDesiredTracks={updateDesiredTracks} />
             }
-          />
-          <Route path='/getstarted' element={<GetStarted />} />
+          /> **/}
+          <Route path='/' element={<GetStarted updateDesiredTracks={updateDesiredTracks.bind(this)}/>} />
           <Route
             path='/player'
             element={<Player desiredTracks={desiredTracks} />}
