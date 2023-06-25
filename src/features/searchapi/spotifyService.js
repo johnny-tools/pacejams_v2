@@ -51,29 +51,15 @@ export const getTrackData = async (playlistUrl) => {
   return await data.json();
 };
 
-export const getAudioFeatures = async (id, minTempo, maxTempo) => {
+export const getAudioFeatures = async (id) => {
   try {
     const token = await fetchAccessToken();
-    const response = await fetch(
+    const data = await fetch(
       `https://api.spotify.com/v1/audio-features/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      searchParameters(token)
     );
-    const data = await response.json();
-      console.log(data);
-    // Check if the tempo is within the desired range
-    if (data.tempo >= minTempo && data.tempo <= maxTempo) {
-      return data;
-    } else {
-      return null; // Tempo is outside the desired range, return null
-    }
+    return data.json();
   } catch (e) {
-    return null; // Error occurred, return null
+    return {};
   }
-
-  // restructure code here
 };
-

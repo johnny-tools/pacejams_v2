@@ -13,10 +13,10 @@ import {
   ListGroupItem,
 } from 'reactstrap';
 
-export default function Player({ desiredTracks }) {
+export default function Player({ desiredTracks, userInfo }) {
   const [selectedTrack, setSelectedTrack] = useState('');
   const audioPlaying = useRef(null);
-
+  console.log('USERINFO>>>', userInfo);
   const playAudio = () => {
     audioPlaying.current.play();
   };

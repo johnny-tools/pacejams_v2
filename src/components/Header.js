@@ -11,7 +11,7 @@ import {
   
   const Header = () => {
     return (
-      <Navbar fixed="top" expand="md">
+      <Navbar expand="md">
         <NavbarBrand href="/">
           <h1 className="mt-1">PaceJams</h1>
         </NavbarBrand>

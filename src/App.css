@@ -7,7 +7,7 @@ body {
 
 h1 {
     font-family: 'Gajraj One', cursive;
-    font-size: 5rem;
+    font-size: 2rem;
     color: rgb(128, 37, 248);
 }
 
@@ -21,8 +21,8 @@ h2 {
 
 .content {
     width: 100%;
-    height: 88%;
-    margin-top: 8rem;
+    height: 100%;
+    margin-top: 6rem;
     top: 0;
     display: flex;
     flex-direction: column;
@@ -52,7 +52,7 @@ h2 {
 
 .navbar-brand {
     max-width: 4rem;
-    margin-left: 10rem;
+    margin-left: 1rem;
 }
 
 .navbar-brand img {
@@ -64,10 +64,17 @@ h2 {
 
 .navbar {
     background: transparent;
-    margin-bottom: 2rem;
-    min-height: 8rem;
+    /* margin-bottom: 1rem; */
+    /* min-height: 1rem; */
     /* backdrop-filter: blur(10px); */
 }
+
+.fixed-navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+  }  
 
 .card{
     margin-top: 8rem;
