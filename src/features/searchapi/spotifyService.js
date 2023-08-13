@@ -30,36 +30,60 @@ export const searchParameters = (token) => ({
   },
 });
 
-export const searchPlayList = async (selectedGenre) => {
+export const searchPlayList = async (selectedGenre, minTempo, maxTempo) => {
   const token = await fetchAccessToken();
-  const result = await fetch(
-    "https://api.spotify.com/v1/search?q=" +
-      encodeURIComponent(selectedGenre) +
-      "&type=playlist&market=US",
-    searchParameters(token)
-  );
-  const resultList = await result.json();
-  const playlistURLs = resultList.playlists.items.map((x) => x.tracks.href);
-  return playlistURLs;
-};
+  const limit = 50; // Number of tracks to retrieve per request
+  let offset = 0;
+  let allResults = [];
 
-
-export const getTrackData = async (playlistUrl) => {
-  // console.log(playlistUrl);
-  const token = await fetchAccessToken();
-  const data = await fetch(playlistUrl, searchParameters(token));
-  return await data.json();
-};
-
-export const getAudioFeatures = async (id) => {
-  try {
-    const token = await fetchAccessToken();
-    const data = await fetch(
-      `https://api.spotify.com/v1/audio-features/${id}`,
+  while (allResults.length < 100) {
+    const result = await fetch(
+      `https://api.spotify.com/v1/recommendations?limit=${limit}&offset=${offset}&market=US&seed_genres=${encodeURIComponent(selectedGenre)}&min_tempo=${minTempo}&max_tempo=${maxTempo}`,
       searchParameters(token)
     );
-    return data.json();
-  } catch (e) {
-    return {};
+
+    const resultList = await result.json();
+
+    if (resultList.tracks && resultList.tracks.length > 0) {
+      // console.log('resultList',resultList);
+      const onlyPopularSongs = resultList.tracks.filter(item => item.popularity >= 70);
+      // console.log('popular songs',onlyPopularSongs);
+      
+      allResults.push(...onlyPopularSongs);
+      offset += limit;
+    } else {
+      break; // No more results
+    }
   }
+
+  // Ensure exactly 100 tracks are returned
+  allResults = allResults.slice(0, 100);
+
+  return allResults;
 };
+
+
+
+
+
+
+
+// export const getTrackData = async (playlistUrl) => {
+//   // console.log(playlistUrl);
+//   const token = await fetchAccessToken();
+//   const data = await fetch(playlistUrl, searchParameters(token));
+//   return await data.json();
+// };
+
+// export const getAudioFeatures = async (id) => {
+//   try {
+//     const token = await fetchAccessToken();
+//     const data = await fetch(
+//       `https://api.spotify.com/v1/audio-features/${id}`,
+//       searchParameters(token)
+//     );
+//     return data.json();
+//   } catch (e) {
+//     return {};
+//   }
+// };

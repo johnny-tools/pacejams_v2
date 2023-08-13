@@ -2,7 +2,7 @@ import { useState } from 'react';
 import GetStarted from '../screens/GetStarted'
 import SearchTempo from '../features/searchapi/SearchTempoNew';
 
-export const PaceCalculator = ({ userInfo }) => {
+export const PaceCalculator = ({ updateDesiredTracks, userInfo }) => {
   console.log(userInfo);
   const { gender, mpm, height, genre } = userInfo;
 
@@ -33,7 +33,7 @@ export const PaceCalculator = ({ userInfo }) => {
   const fastPace = Math.round(stepsPerMile / mpm);
   // console.log(fastPace);
   const minTempo = Math.round(fastPace / 2)
-  const maxTempo = minTempo + 2;
+  const maxTempo = minTempo + 10;
   
   const calculatedTempos = {
     minTempo: minTempo,
@@ -41,9 +41,6 @@ export const PaceCalculator = ({ userInfo }) => {
   }
    
   console.log('CALCULATED TEMPOS >>>>', calculatedTempos);
-  console.log(minTempo);
-  
-   console.log(maxTempo);
   
   //minTempo and maxTempo is created to provide a range of tempos so that it will return more songs for the playlist. This can be adjusted after testing.
   //minTempo and maxTempo are divided by two to provide a more comfortable tempo to run to. Runners will actualy step to the one-and-two-and-three-and-four-and beats rather than on the one-two-three-four beats.
@@ -53,6 +50,7 @@ export const PaceCalculator = ({ userInfo }) => {
       <SearchTempo
         genre={genre}
         calculatedTempos={calculatedTempos}
+        updateDesiredTracks={updateDesiredTracks}
       />
   );
   

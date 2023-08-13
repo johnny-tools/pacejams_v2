@@ -13,10 +13,12 @@ import {
   ListGroupItem,
 } from 'reactstrap';
 
-export default function Player({ desiredTracks, userInfo }) {
+  const Player = ({ desiredTracks, userInfo }) => {
   const [selectedTrack, setSelectedTrack] = useState('');
   const audioPlaying = useRef(null);
-  console.log('USERINFO>>>', userInfo);
+  // console.log('USERINFO>>>', userInfo);
+  console.log('PLAYER DESIREDTRACKS', desiredTracks);
+
   const playAudio = () => {
     audioPlaying.current.play();
   };
@@ -26,7 +28,7 @@ export default function Player({ desiredTracks, userInfo }) {
   };
 
   const setCurrentTrack = (track) => {
-    setSelectedTrack(track.previewUrl);
+    setSelectedTrack(track.preview_url);
     playAudio();
   };
 
@@ -37,7 +39,7 @@ export default function Player({ desiredTracks, userInfo }) {
           <ListGroup numbered flush>
             {desiredTracks.map((track, index) => {
               return (
-                <ListGroupItem tag='button' id={index} onClick={() => setCurrentTrack(track)}>
+                <ListGroupItem tag='button' id={index} key={track.id} onClick={() => setCurrentTrack(track)}>
                   {track.name}
                 </ListGroupItem>
               );
@@ -53,3 +55,5 @@ export default function Player({ desiredTracks, userInfo }) {
     </Container>
   );
 }
+
+export default Player;

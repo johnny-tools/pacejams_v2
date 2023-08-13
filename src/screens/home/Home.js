@@ -41,17 +41,18 @@ export default function Home() {
       <div className='main-body'>
         <Sidebar />
         <Routes>
-          <Route
+          {/* <Route
             path='/SearchTempo'
             element={
               <SearchTempoNew updateDesiredTracks={updateDesiredTracks} />
             }
-          />
-          <Route path='/' element={<GetStarted />} />
+          /> */}
+          <Route path='/' element={<GetStarted updateDesiredTracks={updateDesiredTracks} />} />
           <Route
             path='/player'
             element={<Player desiredTracks={desiredTracks} />}
           />
+          
         </Routes>
       </div>
     </Router>

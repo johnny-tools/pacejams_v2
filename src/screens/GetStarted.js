@@ -15,9 +15,8 @@ import {
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Sidebar from '../components/sidebar/sidebar';
 import { PaceCalculator } from '../utils/paceCalculator';
-import GenreList from './GenreList';
 
-const GetStarted = () => {
+const GetStarted = ({updateDesiredTracks}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [guideText, setguideText] = useState("Let's Get Started");
   const [userInfo, setUserInfo] = useState({});
@@ -28,14 +27,18 @@ const GetStarted = () => {
       gender: values.gender,
       mpm: values.mpm,
       height: values.height,
-      genre: values.genre
+      genre: values.genre,
     });
+    
   };
 
+  // const f
   useEffect(() => {
+
     if (Object.keys(userInfo).length > 0) {
-      console.log(userInfo); 
-      // PaceCalculator( userInfo );
+
+      console.log('getstarted userinfo', userInfo);
+
     }
   }, [userInfo]);
 
@@ -54,7 +57,9 @@ const GetStarted = () => {
         >
           <Form>
             <FormGroup row>
-              <Label htmlFor='gender' className='text-white'>Gender</Label>
+              <Label htmlFor='gender' className='text-white'>
+                Gender
+              </Label>
               <Field as='select' name='gender' className='form-control'>
                 <option selected>Choose one</option>
                 <option>Male</option>
@@ -65,7 +70,9 @@ const GetStarted = () => {
               </ErrorMessage>
             </FormGroup>
             <FormGroup row>
-              <Label htmlFor='mpm' className='text-white'>Minutes / Mile</Label>
+              <Label htmlFor='mpm' className='text-white'>
+                Minutes / Mile
+              </Label>
               <Field as='select' name='mpm' className='form-control'>
                 <option selected>
                   How many minutes would you like to run per mile?
@@ -88,7 +95,9 @@ const GetStarted = () => {
               </ErrorMessage>
             </FormGroup>
             <FormGroup row>
-              <Label for='height' className='text-white'>Height</Label>
+              <Label for='height' className='text-white'>
+                Height
+              </Label>
               <Field
                 type='number'
                 name='height'
@@ -101,21 +110,23 @@ const GetStarted = () => {
               </ErrorMessage>
             </FormGroup>
             <FormGroup row>
-              <Label htmlFor='genre' className='text-white'>Select a Genre</Label>
+              <Label htmlFor='genre' className='text-white'>
+                Select a Genre
+              </Label>
               <Field as='select' name='genre' className='form-control'>
                 <option></option>
-                <option>80s Hits</option>
-                <option>90s Hits</option>
-                <option>2000s</option>
-                <option>Rap</option>
-                <option>Top Workout</option>
-                <option>Dance</option>
-                <option>Beach Party</option>
-                <option>EDM</option>
-                <option>Alternative</option>
-                <option>Blue Grass</option>
-                <option>Country</option>
-                <option>Pop</option>
+                <option>alternative</option>
+                <option>alt-rock</option>
+                <option>club</option>
+                <option>country</option>
+                <option>edm</option>
+                <option>happy</option>
+                <option>hip-hop</option>
+                <option>party</option>
+                <option>power-pop</option>
+                <option>rock</option>
+                <option>work-out</option>
+                <option>pop</option>
               </Field>
               <ErrorMessage name='genre'>
                 {(msg) => <p className='text-danger'>{msg}</p>}
@@ -128,15 +139,16 @@ const GetStarted = () => {
         </Formik>
       </div>
       {Object.keys(userInfo).length > 0 && (
-  <PaceCalculator
-  userInfo={userInfo}
-    // gender={userInfo.gender}
-    // mpm={userInfo.mpm}
-    // height={userInfo.height}
-    // genre={userInfo.genre}
-    handleSubmit={handleSubmit} // Pass the handleSubmit function
-  />
-)}
+        <PaceCalculator
+          userInfo={userInfo}
+          updateDesiredTracks={updateDesiredTracks}
+          // gender={userInfo.gender}
+          // mpm={userInfo.mpm}
+          // height={userInfo.height}
+          // genre={userInfo.genre}
+          // handleSubmit={handleSubmit} // Pass the handleSubmit function
+        />
+      )}
     </Container>
   );
 };
